@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .App-logo {
@@ -36,3 +39,8 @@
     transform: rotate(360deg);
   }
 }
+
+canvas {
+  display: block;
+}
+
