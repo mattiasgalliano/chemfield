@@ -50,7 +50,6 @@ const MOLECULES = [
   { smiles: 'O=C1C=C(O)C(=O)C=C1', name: 'Quinone' },
 ];
 
-
 function App() {
   const canvasRef = useRef(null);
   let hoveredMolecule = null;
@@ -70,6 +69,22 @@ function App() {
 
     window.addEventListener('resize', resize);
     resize();
+
+    function drawGrid() {
+      ctx.strokeStyle = 'rgba(100, 100, 100, 0.2)';
+      ctx.lineWidth = 1;
+      const gridSize = 50;
+      for (let x = 0; x < canvas.width; x += gridSize) {
+        for (let y = 0; y < canvas.height; y += gridSize) {
+          ctx.strokeRect(x, y, gridSize, gridSize);
+        }
+      }
+    }
+
+    function drawParallaxBackground() {
+      ctx.fillStyle = 'rgba(200, 200, 200, 0.05)';
+      ctx.fillRect(parallaxOffset.x, parallaxOffset.y, canvas.width, canvas.height);
+    }
 
     function createMoleculeImage(smilesStr, size, callback) {
       try {
@@ -173,42 +188,59 @@ function App() {
     }
 
     function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // drawParallaxBackground();
+      // drawGrid();
       drawBackground();
-
       if (Math.random() < 0.02) {
         molecules.push(new MoleculeSprite());
       }
-
-      for (let i = molecules.length - 1; i >= 0; i--) {
-        molecules[i].draw();
-      }
-
+      molecules.forEach(molecule => molecule.draw());
       requestAnimationFrame(animate);
     }
 
-    function handleMouseMove(event) {
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-      hoveredMolecule = molecules.find(mol => mol.isHovered(mouseX, mouseY)) || null;
-      parallaxOffset.x = (mouseX - canvas.width / 2) * 0.1;
-      parallaxOffset.y = (mouseY - canvas.height / 2) * 0.1;
+    function handleInteraction(x, y) {
+      hoveredMolecule = molecules.find(mol => mol.isHovered(x, y)) || null;
     }
 
-    function handleMouseClick() {
+    function handleClick(event) {
       if (hoveredMolecule) {
         hoveredMolecule.stopped = !hoveredMolecule.stopped;
       }
     }
 
+    function handleMouseMove(event) {
+      const rect = canvas.getBoundingClientRect();
+      handleInteraction(event.clientX - rect.left, event.clientY - rect.top);
+    }
+
+    function handleTouchMove(event) {
+      event.preventDefault();
+      const touch = event.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      handleInteraction(touch.clientX - rect.left, touch.clientY - rect.top);
+    }
+
+    function handleTouchStart(event) {
+      event.preventDefault();
+      const touch = event.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      handleInteraction(touch.clientX - rect.left, touch.clientY - rect.top);
+      handleClick();
+    }
+
     canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('click', handleMouseClick);
+    canvas.addEventListener('click', handleClick);
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
     animate();
 
     return () => {
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('click', handleMouseClick);
+      canvas.removeEventListener('click', handleClick);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchstart', handleTouchStart);
     };
   }, []);
 
