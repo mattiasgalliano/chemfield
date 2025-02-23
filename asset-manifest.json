@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/chemfield/static/css/main.5be344df.css",
-    "main.js": "/chemfield/static/js/main.7937c581.js",
+    "main.js": "/chemfield/static/js/main.930dfb77.js",
     "static/js/453.e87a010b.chunk.js": "/chemfield/static/js/453.e87a010b.chunk.js",
     "index.html": "/chemfield/index.html",
     "main.5be344df.css.map": "/chemfield/static/css/main.5be344df.css.map",
-    "main.7937c581.js.map": "/chemfield/static/js/main.7937c581.js.map",
+    "main.930dfb77.js.map": "/chemfield/static/js/main.930dfb77.js.map",
     "453.e87a010b.chunk.js.map": "/chemfield/static/js/453.e87a010b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5be344df.css",
-    "static/js/main.7937c581.js"
+    "static/js/main.930dfb77.js"
   ]
 }
