@@ -148,7 +148,7 @@ function App() {
         ctx.drawImage(this.image, this.x - this.size / 2 + parallaxOffset.x, this.y - this.size / 2 + parallaxOffset.y, this.size, this.size);
 
         if (hoveredMolecule === this) {
-          ctx.fillStyle = 'black';
+          ctx.fillStyle = 'blue';
           ctx.font = '24px Arial';
           ctx.textAlign = 'center';
           ctx.fillText(this.name, this.x, this.y - 30);
@@ -250,20 +250,20 @@ function App() {
       handleInteraction(event.clientX - rect.left, event.clientY - rect.top);
     }
 
-    function handleTouchMove(event) {
-      event.preventDefault();
-      const touch = event.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      handleInteraction(touch.clientX - rect.left, touch.clientY - rect.top);
-    }
+    // function handleTouchMove(event) {
+    //   event.preventDefault();
+    //   const touch = event.touches[0];
+    //   const rect = canvas.getBoundingClientRect();
+    //   handleInteraction(touch.clientX - rect.left, touch.clientY - rect.top);
+    // }
 
-    function handleTouchStart(event) {
-      event.preventDefault();
-      const touch = event.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      handleInteraction(touch.clientX - rect.left, touch.clientY - rect.top);
-      handleClick();
-    }
+    // function handleTouchStart(event) {
+    //   event.preventDefault();
+    //   const touch = event.touches[0];
+    //   const rect = canvas.getBoundingClientRect();
+    //   handleInteraction(touch.clientX - rect.left, touch.clientY - rect.top);
+    //   handleClick();
+    // }
 
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('click', handleClick);
