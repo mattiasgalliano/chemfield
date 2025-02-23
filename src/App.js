@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Molecule } from 'openchemlib/full'; // Use full version for complete support
 import './App.css';
 
@@ -54,6 +54,7 @@ function App() {
   const canvasRef = useRef(null);
   let hoveredMolecule = null;
   let parallaxOffset = { x: 0, y: 0 };
+  const [ripples] = useState([]);
 
   useEffect(() => {
     const resize = () => {
@@ -156,10 +157,10 @@ function App() {
 
       isHovered(mouseX, mouseY) {
         return (
-          mouseX >= this.x - this.size / 3 &&
-          mouseX <= this.x + this.size / 3 &&
-          mouseY >= this.y - this.size / 3 &&
-          mouseY <= this.y + this.size / 3
+          mouseX >= this.x - this.size / 9 &&
+          mouseX <= this.x + this.size / 9 &&
+          mouseY >= this.y - this.size / 9 &&
+          mouseY <= this.y + this.size / 9
         );
       }
     }
@@ -196,8 +197,39 @@ function App() {
         molecules.push(new MoleculeSprite());
       }
       molecules.forEach(molecule => molecule.draw());
+      drawRipples(); // Draw ripple effect
       requestAnimationFrame(animate);
     }
+
+    //
+
+    function addRippleEffect(x, y) {
+      ripples.push({ x, y, radius: 5, opacity: 1 });
+    }
+    
+    function drawRipples() {
+      ctx.globalAlpha = 0.6;
+      ripples.forEach((ripple, index) => {
+        ctx.beginPath();
+        ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(0, 0, 0, ${ripple.opacity})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.closePath();
+    
+        // Update ripple properties
+        ripple.radius += 3;
+        ripple.opacity -= 0.05;
+    
+        // Remove finished ripples
+        if (ripple.opacity <= 0) {
+          ripples.splice(index, 1);
+        }
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    //
 
     function handleInteraction(x, y) {
       hoveredMolecule = molecules.find(mol => mol.isHovered(x, y)) || null;
@@ -207,6 +239,10 @@ function App() {
       if (hoveredMolecule) {
         hoveredMolecule.stopped = !hoveredMolecule.stopped;
       }
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      addRippleEffect(x, y);
     }
 
     function handleMouseMove(event) {
