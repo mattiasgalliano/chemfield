@@ -1,60 +1,51 @@
 import { useEffect, useRef, useState } from 'react';
 import { Molecule } from 'openchemlib/full'; // Use full version for complete support
 import './App.css';
+// import RDKitModule from 'rdkit'; // Import RDKit.js
+// import * as $3Dmol from '3dmol';
 
 const MOLECULES = [
-  { smiles: 'C', name: 'Methane' },
-  { smiles: 'CC', name: 'Ethane' },
-  { smiles: 'O=C=O', name: 'Carbon Dioxide' },
-  { smiles: 'CCO', name: 'Ethanol' },
-  { smiles: 'c1ccccc1', name: 'Benzene' },
-  { smiles: 'CN', name: 'Methylamine' },
-  { smiles: 'CC(=O)O', name: 'Acetate' },
-  { smiles: 'C1CCCCC1', name: 'Cyclohexane' },
-  { smiles: 'C#N', name: 'Hydrogen Cyanide' },
-  { smiles: 'C=C', name: 'Ethene' },
-  { smiles: 'CCN', name: 'Ethylamine' },
-  { smiles: 'CCOCC', name: 'Diethyl Ether' },
-  { smiles: 'CC(=O)CC', name: 'Butanone' },
-  { smiles: 'CC(C)O', name: 'Isopropanol' },
-  { smiles: 'CC(C)(C)O', name: 'tert-Butanol' },
-  { smiles: 'C(CO)O', name: 'Glycolaldehyde' },
-  { smiles: 'C1=CC=CC=C1O', name: 'Phenol' },
-  { smiles: 'C1=CC=C(C=C1)O', name: 'Catechol' },
-  { smiles: 'CC(=O)OC1=CC=CC=C1C(=O)O', name: 'Aspirin' },
-  { smiles: 'CC(=O)NCC1=CC=CC=C1', name: 'Acetanilide' },
-  { smiles: 'CCN(CC)CC', name: 'Tetraethylamine' },
-  { smiles: 'NCC(O)CO', name: 'Serine (Amino Acid)' },
-  { smiles: 'CC(C)C1=CC=CC=C1', name: 'Cumene' },
-  { smiles: 'C1C=CC=CC=1', name: 'Cyclopentadiene' },
-  { smiles: 'CC(C)CC', name: 'Pentane' },
-  { smiles: 'CCOCCOCCO', name: 'Polyethylene Glycol' },
-  { smiles: 'C1CCCCCC1', name: 'Cycloheptane' },
-  { smiles: 'CC(C)CC(C)CC(C)C', name: 'Squalene' },
-  { smiles: 'CC(=O)CC(=O)C', name: 'Diacetyl' },
-  { smiles: 'CC(=O)CC(=O)CC(=O)', name: 'Triacetyl' },
-  { smiles: 'CCOCCOC', name: 'Dioxane' },
-  { smiles: 'C1COC2=C(O1)C=CC=C2', name: 'Coumarin' },
-  { smiles: 'C1=CC=C2C(=C1)C=CC=C2', name: 'Naphthalene' },
-  { smiles: 'O=C(O)C(O)=O', name: 'Oxalic Acid' },
-  { smiles: 'C1CC2=C(C1)C=CC=C2O', name: 'Flavone' },
-  { smiles: 'CC(C)CC(C)(C)C', name: 'Neopentane' },
-  { smiles: 'C1=CNC=N1', name: 'Pyrimidine' },
-  { smiles: 'C1CNCCN1', name: 'Piperazine' },
-  { smiles: 'C1CNCC1', name: 'Pyrrolidine' },
-  { smiles: 'C1=CC=CC=N1', name: 'Pyridine' },
-  { smiles: 'C1=NC=NC=N1', name: 'Purine' },
-  { smiles: 'C1C=NC=N1', name: 'Imidazole' },
-  { smiles: 'C1=CC=C(C=C1)N', name: 'Aniline' },
-  { smiles: 'O=C(NCC1=CC=CC=C1)C2=CC=CC=C2', name: 'Lidocaine' },
-  { smiles: 'O=C1C=C(O)C(=O)C=C1', name: 'Quinone' },
+  { smiles: 'NC1=NC=NC2=C1N=CN2', name: 'Adenine' },
+  { smiles: 'O=C1NC(=O)NC=C1C', name: 'Thymine' },
+  { smiles: 'O=C1Nccc(N)n1', name: 'Cytosine' },
+  { smiles: 'N1C(N)=NC=2NC=NC2C1=O', name: 'Guanine' },
+
+  { smiles: 'C[C@@H](C(=O)O)N', name: 'Alanine (A)' },
+  { smiles: 'NC(CCCNC(N)=N)C(O)=O', name: 'Arginine (R)' },
+  { smiles: 'O=C(N)C[C@H](N)C(=O)O', name: 'Asparagine (N)' },
+  { smiles: 'O=C(O)CC(N)C(=O)O', name: 'Aspartic acid (D)' },
+  { smiles: 'C([C@@H](C(=O)O)N)S', name: 'Cysteine (C)' },
+  { smiles: 'C(CC(=O)O)[C@@H](C(=O)O)N', name: 'Glutamic acid (E)' },
+  { smiles: 'O=C(N)CCC(N)C(=O)O', name: 'Glutamine (Q)' },
+  { smiles: 'C(C(=O)O)N', name: 'Glycine (G)' },
+  { smiles: 'O=C([C@H](CC1=CNC=N1)N)O', name: 'Histidine (H)' },
+  { smiles: 'CC[C@H](C)[C@@H](C(=O)O)N', name: 'Isoleucine (I)' },
+  { smiles: 'CC(C)C[C@@H](C(=O)O)N', name: 'Leucine (L)' },
+  { smiles: 'NCCCCC(N)C(=O)O', name: 'Lysine (K)' },
+  { smiles: 'CSCC[C@H](N)C(=O)O', name: 'Methionine (M)' },
+  { smiles: 'N[C@@H](CC1=CC=CC=C1)C(O)=O', name: 'Phenylalanine (Phe)' },
+  { smiles: 'OC(=O)C1CCCN1', name: 'Proline (P)' },
+  { smiles: 'C([C@@H](C(=O)O)N)O', name: 'Serine (S)' },
+  { smiles: 'C[C@H]([C@@H](C(=O)O)N)O', name: 'Threonine (T)' },
+  { smiles: 'c1ccc2c(c1)c(c[nH]2)C[C@@H](C(=O)O)N', name: 'Tryptophan (W)' },
+  { smiles: 'N[C@@H](Cc1ccc(O)cc1)C(O)=O', name: 'Tyrosine (Y)' },
+  { smiles: 'CC(C)[C@@H](C(=O)O)N', name: 'Valine (V)' },
 ];
 
 function App() {
   const canvasRef = useRef(null);
   let hoveredMolecule = null;
   let parallaxOffset = { x: 0, y: 0 };
+
   const [ripples] = useState([]);
+
+  const [mode, setMode] = useState('discover');
+  const [score, setScore] = useState(0);
+  //const [hoveredMolecule, setHoveredMolecule] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [quizOptions, setQuizOptions] = useState([]);
+  const [currentAnswer, setCurrentAnswer] = useState(null);
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
     const resize = () => {
@@ -113,10 +104,43 @@ function App() {
       }
     }
 
+
+    // function createMoleculeImage(smilesStr, size, callback) {
+    //   try {
+    //     // Create a ChemDoodleWebComponent in the DOM
+    //     const container = document.createElement('div');
+    //     container.style.width = `${size}px`;
+    //     container.style.height = `${size}px`;
+    //     document.body.appendChild(container); // Temporarily add to body (can be removed after)
+    
+    //     // Initialize ChemDoodle web component
+    //     const canvas = new ChemDoodleWebComponent(container);
+    
+    //     // Set the SMILES string to the ChemDoodle canvas
+    //     canvas.setSmiles(smilesStr);
+    
+    //     // Convert the ChemDoodle canvas to an image
+    //     setTimeout(() => {
+    //       const image = new Image();
+    //       image.src = canvas.toDataURL(); // Convert canvas to image URL
+    
+    //       // When the image is loaded, call the callback
+    //       image.onload = () => {
+    //         // Clean up the temporary container
+    //         container.remove();
+    //         callback(image);
+    //       };
+    //     }, 100); // Small timeout to ensure rendering is complete
+    
+    //   } catch (error) {
+    //     console.error(`Failed to create molecule for ${smilesStr}:`, error);
+    //   }
+    // }  
+
     class MoleculeSprite {
       constructor() {
         const angle = Math.random() * Math.PI * 2;
-        const speed = 0.5 + Math.random() * 0.5;
+        const speed = 0.25 + Math.random() * 0.5;
 
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
@@ -147,11 +171,11 @@ function App() {
         this.update();
         ctx.drawImage(this.image, this.x - this.size / 2 + parallaxOffset.x, this.y - this.size / 2 + parallaxOffset.y, this.size, this.size);
 
-        if (hoveredMolecule === this) {
+        if (hoveredMolecule == this && mode !== 'quiz') {
           ctx.fillStyle = 'blue';
-          ctx.font = '24px Arial';
+          ctx.font = '24px OCR A Std';
           ctx.textAlign = 'center';
-          ctx.fillText(this.name, this.x, this.y - 30);
+          ctx.fillText(this.name, this.x, this.y - 50);
         }
       }
 
@@ -193,7 +217,7 @@ function App() {
       // drawParallaxBackground();
       // drawGrid();
       drawBackground();
-      if (Math.random() < 0.02) {
+      if (Math.random() < 0.01) {
         molecules.push(new MoleculeSprite());
       }
       molecules.forEach(molecule => molecule.draw());
@@ -208,7 +232,7 @@ function App() {
     }
     
     function drawRipples() {
-      ctx.globalAlpha = 0.6;
+      ctx.globalAlpha = 1;
       ripples.forEach((ripple, index) => {
         ctx.beginPath();
         ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
@@ -219,7 +243,7 @@ function App() {
     
         // Update ripple properties
         ripple.radius += 3;
-        ripple.opacity -= 0.05;
+        ripple.opacity -= 0.025;
     
         // Remove finished ripples
         if (ripple.opacity <= 0) {
@@ -231,17 +255,50 @@ function App() {
 
     //
 
+    function getQuizOptions(correctName) {
+      let options = [correctName];
+      while (options.length < 4) {
+        const randomName = MOLECULES[Math.floor(Math.random() * MOLECULES.length)].name;
+        if (!options.includes(randomName)) {
+          options.push(randomName);
+        }
+      }
+      return options.sort(() => Math.random() - 0.5);
+    }
+
     function handleInteraction(x, y) {
       hoveredMolecule = molecules.find(mol => mol.isHovered(x, y)) || null;
     }
 
     function handleClick(event) {
-      if (hoveredMolecule) {
-        hoveredMolecule.stopped = !hoveredMolecule.stopped;
-      }
       const rect = canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
+    
+      // Find the molecule under the click
+      const clickedMolecule = molecules.find(mol => mol.isHovered(x, y));
+    
+      if (clickedMolecule) {
+        // Toggle movement
+        clickedMolecule.stopped = !clickedMolecule.stopped;
+      }
+    
+      if (mode === 'quiz' && clickedMolecule) {
+        const options = getQuizOptions(clickedMolecule.name);
+        setQuizOptions(options);
+        setCurrentAnswer(clickedMolecule.name);
+    
+        // Set modal position near the clicked molecule
+        setModalPosition({
+          top: event.clientY + 10,
+          left: event.clientX + 10
+        });
+    
+        setShowModal(true);
+      } else {
+        setShowModal(false);
+      }
+    
       addRippleEffect(x, y);
     }
 
@@ -278,13 +335,135 @@ function App() {
       // canvas.removeEventListener('touchmove', handleTouchMove);
       // canvas.removeEventListener('touchstart', handleTouchStart);
     };
-  }, []);
+  }, [mode, score, hoveredMolecule]);
+
+  function getQuizOptions(correctName) {
+    let options = [correctName];
+    while (options.length < 4) {
+      const randomName = MOLECULES[Math.floor(Math.random() * MOLECULES.length)].name;
+      if (!options.includes(randomName)) {
+        options.push(randomName);
+      }
+    }
+    return options.sort(() => Math.random() - 0.5);
+  }
+
+  function handleSelectOption(selectedOption) {
+    if (selectedOption === currentAnswer && score < 10) {
+      setScore(score + 1);
+    }
+    setShowModal(false);
+  }
+
+  function handleCloseModal() {
+    setShowModal(false);
+  }
 
   return (
-    <div className="App">
-      <canvas ref={canvasRef} style={{ background: 'transparent' }} />
+    <div className="App" style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <button 
+        className="hamburger" 
+        onClick={() => setMode(mode === 'discover' ? 'quiz' : 'discover')}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          fontSize: '30px',
+          background: 'none',
+          border: 'none',
+          color: '#333',
+          cursor: 'pointer',
+          zIndex: 10
+        }}
+      >
+        ☰
+      </button>
+      {mode === 'quiz' && <p className="score">Score: {score}</p>}
+      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
+
+      {showModal && (
+        <QuizModal 
+          options={quizOptions} 
+          onSelect={handleSelectOption} 
+          onClose={handleCloseModal} 
+          position={modalPosition} 
+        />
+      )}
     </div>
   );
 }
+
+function QuizModal({ options, onSelect, position }) {
+  return (
+    <div className="modal" style={{ ...modalStyle, top: position.top, left: position.left }}>
+      <div className="modal-content" style={modalContentStyle}>
+        <div className="button-container" style={buttonContainerStyle}>
+          {options.map(option => (
+            <button key={option} onClick={() => onSelect(option)} style={buttonStyle}>
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const modalStyle = {
+  position: 'absolute',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Slightly dark transparent background
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1000,
+  padding: '10px',
+  opacity: 0, // Start with hidden opacity
+  animation: 'fadeIn 0.5s forwards', // Animation for modal fade-in
+};
+
+const modalContentStyle = {
+  backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent background
+  padding: '20px',
+  textAlign: 'center',
+  width: '200px', // Adjust width as needed
+  backdropFilter: 'blur(10px)', // Apply blur effect to the background
+  transform: 'translateY(-20px)', // Start the content slightly above
+  animation: 'rollIn 0.5s forwards', // Animation for sliding in
+};
+
+const buttonContainerStyle = {
+  display: 'flex',
+  flexDirection: 'column', // Arrange buttons in a column (vertically)
+  justifyContent: 'space-between', // Space the buttons evenly
+  height: '200px', // Ensure there is space for exactly 4 rows
+};
+
+const buttonStyle = {
+  margin: '5px 0',
+  padding: '10px',
+  fontSize: '16px',
+  cursor: 'pointer',
+  backgroundColor: 'rgba(255, 255, 255, 0.7)', // Light transparent background for buttons
+  border: 'none',
+  borderRadius: '5px',
+  color: '#333', // Dark color for button text
+  textAlign: 'center',
+};
+
+// Add keyframes for animation
+const styleSheet = document.styleSheets[0];
+styleSheet.insertRule(`
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+`, styleSheet.cssRules.length);
+
+styleSheet.insertRule(`
+  @keyframes rollIn {
+    0% { transform: translateY(-20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+`, styleSheet.cssRules.length);
 
 export default App;
