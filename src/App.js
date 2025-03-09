@@ -62,21 +62,21 @@ function App() {
     window.addEventListener('resize', resize);
     resize();
 
-    function drawGrid() {
-      ctx.strokeStyle = 'rgba(100, 100, 100, 0.2)';
-      ctx.lineWidth = 1;
-      const gridSize = 50;
-      for (let x = 0; x < canvas.width; x += gridSize) {
-        for (let y = 0; y < canvas.height; y += gridSize) {
-          ctx.strokeRect(x, y, gridSize, gridSize);
-        }
-      }
-    }
+    // function drawGrid() {
+    //   ctx.strokeStyle = 'rgba(100, 100, 100, 0.2)';
+    //   ctx.lineWidth = 1;
+    //   const gridSize = 50;
+    //   for (let x = 0; x < canvas.width; x += gridSize) {
+    //     for (let y = 0; y < canvas.height; y += gridSize) {
+    //       ctx.strokeRect(x, y, gridSize, gridSize);
+    //     }
+    //   }
+    // }
 
-    function drawParallaxBackground() {
-      ctx.fillStyle = 'rgba(200, 200, 200, 0.05)';
-      ctx.fillRect(parallaxOffset.x, parallaxOffset.y, canvas.width, canvas.height);
-    }
+    // function drawParallaxBackground() {
+    //   ctx.fillStyle = 'rgba(200, 200, 200, 0.05)';
+    //   ctx.fillRect(parallaxOffset.x, parallaxOffset.y, canvas.width, canvas.height);
+    // }
 
     function createMoleculeImage(smilesStr, size, callback) {
       try {
@@ -171,7 +171,7 @@ function App() {
         this.update();
         ctx.drawImage(this.image, this.x - this.size / 2 + parallaxOffset.x, this.y - this.size / 2 + parallaxOffset.y, this.size, this.size);
 
-        if (hoveredMolecule == this && mode !== 'quiz') {
+        if (hoveredMolecule === this && mode !== 'quiz') {
           ctx.fillStyle = 'blue';
           ctx.font = '24px OCR A Std';
           ctx.textAlign = 'center';
@@ -267,6 +267,7 @@ function App() {
     }
 
     function handleInteraction(x, y) {
+      // eslint-disable-next-line
       hoveredMolecule = molecules.find(mol => mol.isHovered(x, y)) || null;
     }
 
@@ -337,16 +338,16 @@ function App() {
     };
   }, [mode, score, hoveredMolecule]);
 
-  function getQuizOptions(correctName) {
-    let options = [correctName];
-    while (options.length < 4) {
-      const randomName = MOLECULES[Math.floor(Math.random() * MOLECULES.length)].name;
-      if (!options.includes(randomName)) {
-        options.push(randomName);
-      }
-    }
-    return options.sort(() => Math.random() - 0.5);
-  }
+  // function getQuizOptions(correctName) {
+  //   let options = [correctName];
+  //   while (options.length < 4) {
+  //     const randomName = MOLECULES[Math.floor(Math.random() * MOLECULES.length)].name;
+  //     if (!options.includes(randomName)) {
+  //       options.push(randomName);
+  //     }
+  //   }
+  //   return options.sort(() => Math.random() - 0.5);
+  // }
 
   function handleSelectOption(selectedOption) {
     if (selectedOption === currentAnswer && score < 10) {
